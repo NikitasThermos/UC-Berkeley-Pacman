@@ -114,21 +114,32 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    
+    
+    
     queue = Queue()
     queue.push((problem.getStartState(), []))
     checkedStates = set()
 
-    while queue:
+    while not queue.isEmpty():
         coords, path = queue.pop()
+
         if problem.isGoalState(coords):
             return path
+        
         checkedStates.add(coords)
+
         nextStates = problem.getSuccessors(coords)
+        statesInQueue = [s[0] for s in queue.list]
         for state in nextStates:
             coords, dir, _ = state
-            if coords not in checkedStates:
+            if coords not in checkedStates and coords not in statesInQueue:
                 newpath = path + [dir]
                 queue.push((coords, newpath))
+    
+
+
+    
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):

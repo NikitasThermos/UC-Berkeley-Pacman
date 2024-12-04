@@ -375,6 +375,7 @@ def cornersHeuristic(state, problem):
     x, y = state[0]
     cornersVisited = list(state[1])
     
+    """
     totalDistance = 0
     for corner in corners:
         if not cornersVisited[corners.index(corner)]:
@@ -382,8 +383,18 @@ def cornersHeuristic(state, problem):
             distance = (cornerX - x)**2 + (cornerY- y)**2
             totalDistance += distance
     return totalDistance
-    
-    
+ 
+    """
+    maxDistance = 0
+    for corner in corners:
+        if not cornersVisited[corners.index(corner)]:
+            cornerX, cornerY = corner
+            distance = abs(cornerX - x) + abs(cornerY - y)
+            if distance > maxDistance:
+                maxDistance = distance
+    return maxDistance * cornersVisited.count(False)
+   
+
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
