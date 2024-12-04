@@ -123,12 +123,10 @@ def breadthFirstSearch(problem):
 
     while not queue.isEmpty():
         coords, path = queue.pop()
-
         if problem.isGoalState(coords):
             return path
         
         checkedStates.add(coords)
-
         nextStates = problem.getSuccessors(coords)
         statesInQueue = [s[0] for s in queue.list]
         for state in nextStates:
@@ -149,18 +147,29 @@ def uniformCostSearch(problem):
     queue.push((problem.getStartState(),  []), 0)
     checkedStates = set()
 
-    while queue:
+    while not queue.isEmpty():
         coords, path = queue.pop()
         if problem.isGoalState(coords):
             return path
         checkedStates.add(coords)
+
         nextStates = problem.getSuccessors(coords)
+        statesInQueue = [s[2][0] for s in queue.heap]
         for state in nextStates:
             coords, dir, _ = state
-            if coords not in checkedStates:
+            if coords not in checkedStates and coords not in statesInQueue:
                 newpath = path + [dir]
                 cost = problem.getCostOfActions(newpath)
                 queue.push((coords, newpath), cost)
+            else:
+                for i in range(len(statesInQueue)):
+                    if  coords == statesInQueue[i]:
+                        newcost = problem.getCostOfActions(path + [dir])
+                        oldcost = queue.heap[i][0]
+                        if newcost < oldcost:
+                            queue.heap[i] = (oldcost, queue.heap[i][1], (state[0], path+[dir]))
+                            queue.update((state[0], path+[dir]), newcost)
+
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
