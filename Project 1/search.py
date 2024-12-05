@@ -105,17 +105,12 @@ def depthFirstSearch(problem):
             if coords not in checkedStates:
                 newpath = path + [dir]
                 stack.push((coords, newpath))
-
-    util.raiseNotDefined()
-    
-    
+   
 
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    
-    
     
     queue = Queue()
     queue.push((problem.getStartState(), []))
@@ -136,10 +131,6 @@ def breadthFirstSearch(problem):
                 queue.push((coords, newpath))
     
 
-
-    
-    util.raiseNotDefined()
-
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
@@ -157,11 +148,22 @@ def uniformCostSearch(problem):
         statesInQueue = [s[2][0] for s in queue.heap]
         for state in nextStates:
             coords, dir, _ = state
+            newpath = path + [dir]
             if coords not in checkedStates and coords not in statesInQueue:
-                newpath = path + [dir]
+                #newpath = path + [dir]
                 cost = problem.getCostOfActions(newpath)
                 queue.push((coords, newpath), cost)
             else:
+                if coords in statesInQueue:
+                    index  =  statesInQueue.index(coords)
+                    newcost = problem.getCostOfActions(newpath)
+                    oldcost = queue.heap[index][0]
+                    if newcost < oldcost:
+                        queue.heap[index] = (oldcost, queue.heap[index][1], (state, newpath))
+                        queue.update((state[0], newpath), newcost)
+
+                    
+                """
                 for i in range(len(statesInQueue)):
                     if  coords == statesInQueue[i]:
                         newcost = problem.getCostOfActions(path + [dir])
@@ -169,8 +171,8 @@ def uniformCostSearch(problem):
                         if newcost < oldcost:
                             queue.heap[i] = (oldcost, queue.heap[i][1], (state[0], path+[dir]))
                             queue.update((state[0], path+[dir]), newcost)
+                """
 
-    util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
