@@ -375,16 +375,6 @@ def cornersHeuristic(state, problem):
     x, y = state[0]
     cornersVisited = list(state[1])
     
-    """
-    totalDistance = 0
-    for corner in corners:
-        if not cornersVisited[corners.index(corner)]:
-            cornerX, cornerY = corner
-            distance = (cornerX - x)**2 + (cornerY- y)**2
-            totalDistance += distance
-    return totalDistance
- 
-    """
     maxDistance = 0
     for corner in corners:
         if not cornersVisited[corners.index(corner)]:
@@ -392,7 +382,7 @@ def cornersHeuristic(state, problem):
             distance = abs(cornerX - x) + abs(cornerY - y)
             if distance > maxDistance:
                 maxDistance = distance
-    return maxDistance * cornersVisited.count(False)
+    return maxDistance 
    
 
 
@@ -490,13 +480,14 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     x, y = position
     foodCoords = foodGrid.asList()
-    totalDistance =  0
+    maxDistance =  0
     for coord in foodCoords:
         foodx, foody = coord
-        distance = (foodx - x)**2 + (foody - y)**2
-        totalDistance += distance
+        distance = abs(foodx - x) + abs(foody - y)
+        if distance > maxDistance:
+            maxDistance = distance 
 
-    return totalDistance
+    return maxDistance
 
 
 
