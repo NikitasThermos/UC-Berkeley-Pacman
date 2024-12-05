@@ -150,28 +150,15 @@ def uniformCostSearch(problem):
             coords, dir, _ = state
             newpath = path + [dir]
             if coords not in checkedStates and coords not in statesInQueue:
-                #newpath = path + [dir]
                 cost = problem.getCostOfActions(newpath)
                 queue.push((coords, newpath), cost)
-            else:
-                if coords in statesInQueue:
-                    index  =  statesInQueue.index(coords)
-                    newcost = problem.getCostOfActions(newpath)
-                    oldcost = queue.heap[index][0]
-                    if newcost < oldcost:
-                        queue.heap[index] = (oldcost, queue.heap[index][1], (state, newpath))
-                        queue.update((state[0], newpath), newcost)
-
-                    
-                """
-                for i in range(len(statesInQueue)):
-                    if  coords == statesInQueue[i]:
-                        newcost = problem.getCostOfActions(path + [dir])
-                        oldcost = queue.heap[i][0]
-                        if newcost < oldcost:
-                            queue.heap[i] = (oldcost, queue.heap[i][1], (state[0], path+[dir]))
-                            queue.update((state[0], path+[dir]), newcost)
-                """
+            elif coords in statesInQueue:
+                index  =  statesInQueue.index(coords)
+                newcost = problem.getCostOfActions(newpath)
+                oldcost = queue.heap[index][0]
+                if newcost < oldcost:
+                    queue.heap[index] = (oldcost, queue.heap[index][1], (coords, newpath))
+                    queue.update((coords, newpath), newcost)
 
 
 def nullHeuristic(state, problem=None):
@@ -189,18 +176,28 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     queue.push((start,  []), 0 + heuristic(start, problem))
     checkedStates = set()
 
-    while queue:
+    while not queue.isEmpty():
         coords, path = queue.pop()
         if problem.isGoalState(coords):
             return path
         checkedStates.add(coords)
+        statesInQueue = [s[2][0] for s in queue.heap]
         nextStates = problem.getSuccessors(coords)
         for state in nextStates:
             coords, dir, _ = state
-            if coords not in checkedStates:
-                newpath = path + [dir]
+            newpath = path + [dir]
+            if coords not in checkedStates and coords not in statesInQueue:
                 cost = problem.getCostOfActions(newpath) + heuristic(coords, problem)
                 queue.push((coords, newpath), cost)
+            elif coords in statesInQueue:
+                index = statesInQueue.index(coords)
+                newcost = problem.getCostOfActions(newpath) + heuristic(coords, problem)
+                oldcost = queue.heap[index][0]
+                if newcost < oldcost:
+                    queue.heap[index] = (oldcost, queue.heap[index][1], (coords, newpath))
+                    queue.update((coords, newpath), newcost)
+                
+                
     util.raiseNotDefined()
 
 
