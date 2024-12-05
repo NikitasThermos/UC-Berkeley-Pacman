@@ -543,7 +543,6 @@ class ClosestDotSearchAgent(SearchAgent):
         queue.push((startPosition, path))
         checkedStates = set()
         while not queue.isEmpty():
-            #print(queue.list)
             coords, path = queue.pop()
             if problem.isGoalState(coords):
                 return path
