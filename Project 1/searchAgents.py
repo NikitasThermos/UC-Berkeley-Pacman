@@ -478,17 +478,34 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+
+    
     x, y = position
-    foodCoords = foodGrid.asList()
-    maxDistance =  0
-    for coord in foodCoords:
-        foodx, foody = coord
-        distance = abs(foodx - x) + abs(foody - y)
-        if distance > maxDistance:
-            maxDistance = distance 
+    food = foodGrid.asList()
+   
+    if problem.isGoalState(state):
+        return 0     
+    
+    first = food[0]
+    second = food[0]
+    maxDistance = 0
+    for i in range(len(food)):
+        for j in range(i + 1, len(food)):
+            x1, y1  = food[i]
+            x2, y2  = food[j]
+            dist = abs(x1 - x2) + abs(y1 - y2)
+            if dist > maxDistance:
+                maxDistance = dist
+                first = food[i]
+                second = food[j]
+    
+    x1 , y1  = first
+    x2, y2 = second
 
-    return maxDistance
-
+    firstDist = abs(x - x1) + abs(y - y1)
+    secDist =  abs(x - x2) + abs(y - y2)
+   
+    return maxDistance + min(firstDist, secDist)
 
 
 
