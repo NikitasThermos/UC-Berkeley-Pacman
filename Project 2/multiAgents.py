@@ -291,7 +291,6 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         probability = 1/len(legalActions)
         for action in legalActions:
             successor = state.generateSuccessor(agentIndex, action)
-            #v = min(v, self.value(successor, agentIndex+1, depth))
             v += probability * self.value(successor, agentIndex+1, depth)
         return v
     
@@ -307,6 +306,34 @@ def betterEvaluationFunction(currentGameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
+    score = 0 
+    
+    """
+    ghostPos = []
+    for i in range(1, currentGameState.getNumAgents()):
+        scareTimer = currentGameState.getGhostState(i).scaredTimer
+        if scareTimer > 1:
+            ghostPos.append(currentGameState.getGhostPosition(i))
+    """
+    ghostPos = currentGameState.getGhostPositions()
+    pacPosition = currentGameState.getPacmanPosition()
+    minDistToGhost = 9999
+    
+    for index, pos in enumerate(ghostPos):
+        distance = util.manhattanDistance(pos, pacPosition)
+        if distance < minDistToGhost:
+            minDistToGhost = distance
+            ghostIndex = index+1
+            
+    
+    numCapsules  = len(currentGameState.getCapsules())
+    if currentGameState.getGhostState(ghostIndex).scaredTimer > 3:
+        score += 1/minDistToGhost
+    else:
+        score += minDistToGhost
+    score -= 10 * currentGameState.getNumFood() + 100 * numCapsules
+    return score
+
     util.raiseNotDefined()
 
 # Abbreviation
