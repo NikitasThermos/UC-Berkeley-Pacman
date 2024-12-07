@@ -308,13 +308,7 @@ def betterEvaluationFunction(currentGameState):
     "*** YOUR CODE HERE ***"
     score = 0 
     
-    """
-    ghostPos = []
-    for i in range(1, currentGameState.getNumAgents()):
-        scareTimer = currentGameState.getGhostState(i).scaredTimer
-        if scareTimer > 1:
-            ghostPos.append(currentGameState.getGhostPosition(i))
-    """
+    
     ghostPos = currentGameState.getGhostPositions()
     pacPosition = currentGameState.getPacmanPosition()
     minDistToGhost = 9999
