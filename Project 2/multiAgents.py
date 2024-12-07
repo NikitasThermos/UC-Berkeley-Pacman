@@ -199,9 +199,6 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             if value > best_value:
                 best_value = value
                 best_action = action
-                if best_value > b: 
-                    print('in if')
-                    #return best_action
             a = max(a, best_value)
          
                        
@@ -257,7 +254,50 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
+        best_value = float('-inf')
+        best_action = 0
+        for action in gameState.getLegalActions():
+            succ = gameState.generateSuccessor(0, action)
+            value = self.value(succ, 1, 0)
+            if value > best_value:
+                best_value = value
+                best_action = action
+        return best_action
+
+
+    def value(self, state, agentIndex, depth):
+        agentIndex = agentIndex % state.getNumAgents()
+        if agentIndex == 0:
+            depth += 1
+        if state.isWin() or state.isLose() or depth == self.depth:
+            return self.evaluationFunction(state)
+        elif agentIndex == 0: 
+            return self.max_value(state, depth)
+        else: 
+            return self.exp_value(state, agentIndex, depth)
+
+    def max_value(self, state, depth):
+        v = float('-inf')
+        legalActions = state.getLegalActions(0)
+        for action in legalActions:
+            successor = state.generateSuccessor(0, action)
+            v = max(v, self.value(successor, 1, depth))
+        return v
+
+    
+    def exp_value(self, state, agentIndex, depth):
+        v = 0
+        legalActions = state.getLegalActions(agentIndex)
+        probability = 1/len(legalActions)
+        for action in legalActions:
+            successor = state.generateSuccessor(agentIndex, action)
+            #v = min(v, self.value(successor, agentIndex+1, depth))
+            v += probability * self.value(successor, agentIndex+1, depth)
+        return v
+    
         util.raiseNotDefined()
+    
+
 
 def betterEvaluationFunction(currentGameState):
     """
